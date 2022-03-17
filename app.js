@@ -88,6 +88,7 @@ app.post("", (req, res) => {
             // Each line in input.txt will be successively available here as `line`.
             console.log(`Line from file: ${line}`);
 
+            //
             //aca podes insertar renglon por renglon directo en la db, o meterlo en un array y despues llamar a una funcion que hace la escritura.
             //para que quede mas ordenado
 
