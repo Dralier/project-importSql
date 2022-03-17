@@ -2,6 +2,8 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const fileupload = require("express-fileupload");
 const fs = require("fs");
+const mysql = require('mysql2');
+
 const app = express();
 const port = process.env.PORT || 5000;
 const multer = require("multer");
@@ -10,11 +12,9 @@ const storage = multer.memoryStorage();
 const upload = multer({storage: storage});
 
 // Default
-app.use(
-    fileupload({
+app.use(fileupload({
         // Aca va la conf de imagenes.
-    })
-);
+    }));
 
 //Archivos estaticos
 app.use(express.static('public'));
@@ -25,8 +25,36 @@ const handlebars = exphbs.create({ extname: ".hbs" });
 app.engine(".hbs", handlebars.engine);
 app.set("view engine", ".hbs");
 
+// Conectanding
+const pool = mysql.createPool({
+    connectionLimit: 10,
+    host:'localhost',
+    user: 'root',
+    password: 'sakura3545',
+    database: 'userprofile'
+
+});
+
+pool.getConnection((err, connection) =>{
+    if(err) throw err; // no conecto
+    console.log('Connected');
+});
+
+
 app.get("", (req, res) => {
-    res.render("index");
+    // res.render("index");
+    pool.getConnection((err, connection) =>{
+        if (err) throw err; // no conecto
+        console.log('Conectado');
+
+        connection.query('SELECT * FROM user WHERE id = "1"', (err, rows)=>{
+            // Cuando finiquita que corte
+            connection.release();
+                if (!err) {
+                    res.render('index',{rows});
+                }
+        });
+    });
 });
 
 app.post("", (req, res) => {
