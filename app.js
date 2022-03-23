@@ -27,7 +27,6 @@ const pool = mysql.createPool({
     user: 'root',
     password: 'sakura3545',
     database: 'userprofile'
-
 });
 
 pool.getConnection((err, connection) =>{
@@ -69,7 +68,23 @@ app.post("", (req, res) => {
     sampleFile.mv(uploadPath, function(err){
         if(err) return res.status(500).send(err);
 
-        res.send('Archivo subido');
+        pool.getConnection((err, connection) =>{
+            if (err) throw err; // no conecto
+            console.log('Conectado');
+            
+            connection.query('UPDATE user SET profile_image = ? WHERE id ="1"', [sampleFile.name], (err, rows)=>{
+                // Cuando finiquita que corte
+                connection.release();
+                    if (!err) {
+                        res.redirect('/');
+                    } else{
+                        console.log(err);
+                    }
+
+            });
+        });
+
+        //res.send('Archivo subido');
 
     });
 

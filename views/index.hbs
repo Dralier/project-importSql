@@ -7,7 +7,11 @@
 <div class="card">
     {{#each rows}}
 
-    <img class="card__image" src="/img/default.jpg" alt="Perfil de usuario" />
+    {{#if this.profile_image}}
+        <img class="card__image" src="{{this.profile_image}}" alt="Perfil de usuario" />
+    {{else}}
+        <img class="card__image" src="/img/default.png" alt="Perfil de usuario" />
+    {{/if}}
     <h1 class="card__title">{{this.name}}</h1>
     <div class="card__job">{{this.job_title}}</div>
     <p class="card__about">{{this.description}}</p>
